@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.list);
         listView.setOnScrollChangeListener(new ScrollListener());
-        data.addAll(DataService.getData(0,20));
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.textView,data);
+        data.addAll(DataService.getData(0, 20));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.textView, data);
         listView.setAdapter(adapter);
     }
 
