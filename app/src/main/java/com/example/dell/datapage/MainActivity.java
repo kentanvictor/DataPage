@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private List<String> data = new ArrayList<String>();
     ArrayAdapter<String> adapter;
-    private int number = 20;//每次获取多少数据
+    private int number = 40;//每次获取多少数据
     private int maxPage = 5;//总共有多少页
     private boolean loadFinish = true;//默认是否加载完成下一页
     View footer;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         footer = getLayoutInflater().inflate(R.layout.footer, null);
         listView = (ListView) findViewById(R.id.list);
         listView.setOnScrollChangeListener(new ScrollListener());
-        data.addAll(DataService.getData(0, 20));
+        data.addAll(DataService.getData(0, 40));
         adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.textView, data);
         listView.addFooterView(footer);//添加页脚
         listView.setAdapter(adapter);
