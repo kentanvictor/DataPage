@@ -22,18 +22,22 @@ public class MainActivity extends AppCompatActivity {
     private int number = 20;//每次获取多少数据
     private int maxPage = 5;//总共有多少页
     private boolean loadFinish = true;//默认是否加载完成下一页
+    View footer;
 
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        footer = getLayoutInflater().inflate(R.layout.footer,null);
         listView = (ListView) findViewById(R.id.list);
         listView.setOnScrollChangeListener(new ScrollListener());
         data.addAll(DataService.getData(0, 20));
         adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.textView, data);
-        /*listView.addFooterView();//添加页脚*/
+        listView.addFooterView(footer);//添加页脚
         listView.setAdapter(adapter);
+        listView.removeFooterView(footer);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 int nextPage = currentPage + 1;//获取下一页
                 if (nextPage <= maxPage && loadFinish) {
                     loadFinish = false;
+                    listView.addFooterView(footer);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -75,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             data.addAll((List<String>) msg.obj);
             adapter.notifyDataSetChanged();//告诉ListView数据已经发生改变,要求ListVIew更新界面显示
+            if(listView.getFooterViewsCount() > 0)
+            {
+                listView.removeFooterView(footer);
+            }
             loadFinish = true;
         }
     };
