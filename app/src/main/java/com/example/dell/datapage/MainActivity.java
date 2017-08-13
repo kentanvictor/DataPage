@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        footer = getLayoutInflater().inflate(R.layout.footer,null);
+        footer = getLayoutInflater().inflate(R.layout.footer, null);
         listView = (ListView) findViewById(R.id.list);
         listView.setOnScrollChangeListener(new ScrollListener());
         data.addAll(DataService.getData(0, 20));
@@ -53,38 +53,39 @@ public class MainActivity extends AppCompatActivity {
             int lastItemid = listView.getLastVisiblePosition();//获取当前屏幕最后的Item的ID
             if ((lastItemid + 1) == totalItemCount)//达到数据的最后一条记录
             {
-                final int loadTotal = totalItemCount;
-                int currentPage = totalItemCount % number == 0 ? totalItemCount / number : totalItemCount / number + 1;
-                int nextPage = currentPage + 1;//获取下一页
-                if (nextPage <= maxPage && loadFinish) {
-                    loadFinish = false;
-                    listView.addFooterView(footer);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(3000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                if (totalItemCount > 0) {
+                    int currentPage = totalItemCount % number == 0 ? totalItemCount / number : totalItemCount / number + 1;
+                    int nextPage = currentPage + 1;//获取下一页
+                    if (nextPage <= maxPage && loadFinish) {
+                        loadFinish = false;
+                        listView.addFooterView(footer);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(3000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                List<String> result = DataService.getData(totalItemCount, number);
+                                handler.sendMessage(handler.obtainMessage(100, result));
                             }
-                            List<String> result = DataService.getData(totalItemCount, number);
-                            handler.sendMessage(handler.obtainMessage(100, result));
-                        }
-                    }).start();
+                        }).start();
+                    }
                 }
             }
         }
-    }
 
-    Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            data.addAll((List<String>) msg.obj);
-            adapter.notifyDataSetChanged();//告诉ListView数据已经发生改变,要求ListVIew更新界面显示
-            if(listView.getFooterViewsCount() > 0)
-            {
-                listView.removeFooterView(footer);
+        Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                data.addAll((List<String>) msg.obj);
+                adapter.notifyDataSetChanged();//告诉ListView数据已经发生改变,要求ListVIew更新界面显示
+                if (listView.getFooterViewsCount() > 0) {
+                    listView.removeFooterView(footer);
+                }
+                loadFinish = true;
             }
-            loadFinish = true;
-        }
-    };
+        };
+    }
 }
+
