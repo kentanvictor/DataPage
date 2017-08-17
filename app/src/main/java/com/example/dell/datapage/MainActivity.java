@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         footer = getLayoutInflater().inflate(R.layout.footer, null);
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnScrollChangeListener(new ScrollListener());
+        listView.setOnScrollListener(new ScrollListener());
         data.addAll(DataService.getData(0, 40));
         adapter = new ArrayAdapter<String>(this, R.layout.listview_item, R.id.textView, data);
         listView.addFooterView(footer);//添加页脚
@@ -41,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private final class ScrollListener implements View.OnScrollChangeListener {
+    private final class ScrollListener implements AbsListView.OnScrollListener {
 
         @Override
-        public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            Log.i("MainActivity", "onScrollStateChanged:(scrollState=" + scrollState + ")");
         }
 
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, final int totalItemCount) {
